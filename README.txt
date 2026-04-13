@@ -1,0 +1,1 @@
+Automatic Scoreboard for 3-6 players. Simply read the rules, input names and play. Saves time, paper, and cheating accusations!
