@@ -1,0 +1,119 @@
+body {
+  background-color: black;
+  color: rgb(238, 187, 3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+}
+
+Form hr {
+  color: rgb(238, 187, 3);
+}
+
+#scoreboard {
+  border-collapse: collapse;
+  width: 100%;
+  color: rgb(238, 187, 3);
+}
+
+#scoreboard, 
+#scoreboard th, 
+#scoreboard td {
+  border: 1px solid rgb(238, 187, 3);
+}
+
+#scoreboard th, 
+#scoreboard td {
+  padding: 8px;
+  text-align: center;
+}
+
+#scoreboard th {
+  background-color: black;
+  color: rgb(238, 187, 3);
+}
+
+#inputContainer {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid rgb(238, 187, 3);
+  background-color: #1a1a1a;
+  border-radius: 6px;
+  max-width: 600px;
+}
+
+#inputContainer label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: rgb(238, 187, 3);
+}
+
+#inputContainer input[type="number"] {
+  width: 60px;
+  padding: 5px 8px;
+  margin-left: 10px;
+  border: 1px solid rgb(238, 187, 3);
+  border-radius: 4px;
+  background-color: black;
+  color: rgb(238, 187, 3);
+  font-weight: bold;
+  transition: border-color 0.3s ease;
+}
+
+#inputContainer input[type="number"]:focus {
+  outline: none;
+  border-color: #ffcc00; 
+  box-shadow: 0 0 5px #ffcc00;
+}
+
+#inputContainer button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: black;
+  color: rgb(238, 187, 3);
+  border: 2px solid rgb(238, 187, 3);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#inputContainer button:hover,
+#inputContainer button:focus {
+  background-color: rgb(238, 187, 3);
+  color: black;
+  outline: none;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #111;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgb(238, 187, 3);
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  #inputContainer {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  #inputContainer input[type="number"] {
+    width: 50px;
+    margin-left: 5px;
+  }
+
+  #inputContainer button {
+    width: 100%;
+  }
+}
+

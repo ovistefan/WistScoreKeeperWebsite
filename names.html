@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8"> 
+        <meta name="Author" content="Stefan Belu">
+        <meta name="Date" content="12/21/2025">
+        <meta name="Description" content="This site is for scorekeeping for the wist card game">
+        <link rel="icon" href="icons/tab-icon.png"
+        type="image/x-icon">
+        <link rel="stylesheet" href="css/names.css" type="text/css">
+        <title>WistScoreKeeper</title>
+    </head>
+    <body>
+        <p>Number of players selected: <span id="playerCount">None</span></p>
+        <form id="playerForm">
+            <div id="playerNamesContainer"></div>
+            <button type="submit">Submit</button>
+        </form>
+        <script>
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+            const container = document.getElementById('playerNamesContainer');
+            const players = parseInt(getQueryParam('players'), 10);
+            if (!isNaN(players)) {
+                console.log("Number of players selected:", players);
+                document.getElementById("playerCount").textContent = players;
+                container.innerHTML = "";
+                for (let i = 1; i <= players; i++){
+                    const formRow = document.createElement('div');
+                    formRow.className = 'form-row';
+                    const label = document.createElement("label")
+                    label.htmlFor = `playerName${i}`;
+                    label.textContent = `Player ${i} Name: `;
+                    const br = document.createElement('br')  
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = `playerName${i}`;
+                    input.name = `playerName${i}`;
+                    input.placeholder = `Enter name for Player ${i}`;
+                    formRow.appendChild(label);
+                    formRow.appendChild(input);
+                    formRow.appendChild(br);
+                    container.appendChild(formRow);
+                }
+            } else {
+                console.log("No valid number of players selected.");
+                document.getElementById("playerCount").textContent = 'No players selected';
+                container.innerHTML = "";
+            }
+            document.getElementById('playerForm').addEventListener('submit', function(event){
+                event.preventDefault();
+                if (isNaN(players) || players < 1) {
+                    alert('Invalid number of players.');
+                    return;
+                    }
+                const params = new URLSearchParams();
+                for (let i = 1; i <= players; i++){
+                    const input = document.getElementById(`playerName${i}`);
+                    if (!input){
+                        continue;
+                    }
+                    const name = input.value.trim();
+                    if (!name) {
+                        alert(`Please enter a name for Player ${i}`);
+                        input.focus();
+                        return;
+                    }
+                    params.append(`player${i}`, name)
+                }
+                window.location.href = `table.html?${params.toString()}`;
+            });
+        </script>
+    </body>
+</html>
+    

@@ -1,0 +1,39 @@
+h1{
+    text-align: center;
+    color: rgb(238, 187, 3);
+}
+
+form{
+    color: rgb(238, 187, 3)
+}
+body{
+    background-color: black;
+    color: rrgb(238, 187, 3);
+    text-align: center;
+}
+p{
+  color:rgb(238, 187, 3);
+  text-align: left;
+  
+}
+#playerNamesContainer {
+  width: 100%; 
+  max-width: 400px; 
+  margin: 0 auto; 
+  text-align: left; 
+  align-content: left;
+}
+.form-row {
+  display: flex;
+  justify-content: flex-start;
+  border-spacing: 60px;
+  margin-bottom: 60px;
+}
+
+.form-row label {
+  width: 130px;
+}
+
+.form-row input {
+  flex-grow: 1;
+}

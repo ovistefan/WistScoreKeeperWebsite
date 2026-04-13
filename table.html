@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang = "en-US">
+    <head>
+        <meta charset="UTF-8"> 
+        <meta name="Author" content="Stefan Belu">
+        <meta name="Date" content="12/21/2025">
+        <meta name="Description" content="This site is for scorekeeping for the wist card game">
+        <link rel="icon" href="icons/tab-icon.png"
+        type="image/x-icon">
+        <link rel="stylesheet" href="css/table.css" type="text/css">
+        <title>WistScoreKeeper</title>
+    </head>
+    <body>
+        <div id="tableContainer">
+            <table id="scoreboard" style="width: 100%">
+                <thead>
+                    <tr id="header-row">
+                         <th>Loading...</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreboard-body">
+                    <tr id="data-row">
+                        <td>    </td>
+                    </tr>
+                </tbody>   
+            </table>
+        </div>
+        <div id="inputContainer"></div>
+        <script>
+            function getUrlParams(){
+                const urlParams = new URLSearchParams(window.location.search);
+                let entries = {};
+                for (const[key, value] of urlParams){
+                    entries[key] = value
+                }
+                return entries
+            }
+            
+            const params = getUrlParams();
+            const players = [];
+            let i = 1;
+            while (params[`player${i}`] !== undefined) {
+                players.push(params[`player${i}`]);
+                i++;
+            }
+
+            let roundIndex = 0;
+            const roundScheme = Array(players.length).fill(1).concat([2,3,4,5,6,7], Array(players.length).fill(8),[7,6,5,4,3,2], Array(players.length).fill(1))
+
+            function buildScoreBoard(){
+                const header_row = document.getElementById("header-row");
+                const data_row = document.getElementById("data-row");
+                const roundHeader = document.createElement('th');
+                header_row.innerHTML = '';
+                data_row.innerHTML = '';
+                roundHeader.textContent = "Game of #"
+                header_row.appendChild(roundHeader);
+                let i = 1;
+                const width_params = {
+                    3 : '23.5%',
+                    4 : '16%',
+                    5 : '12.5',
+                    6 : '10%'
+                }
+                while (params[`player${i}`] != undefined){
+                    const player = params[`player${i}`];
+                    const th = document.createElement('th');
+                    th.textContent = player;
+                    th.style.width = width_params[players.length];
+                    header_row.appendChild(th);
+                    const thBet = document.createElement('th');
+                    thBet.textContent = 'Bet'; 
+                    header_row.appendChild(thBet);
+                    const thTake = document.createElement('th');
+                    thTake.textContent = 'Take';
+                    header_row.appendChild(thTake);
+                    i++;
+                } 
+            }
+
+            function buildInputForm(players, type){
+                const container = document.getElementById('inputContainer');
+                container.innerHTML = '';
+                const form = document.createElement('form');
+                form.id = type + 'Form';
+                const cardNum = document.createElement('label')
+                cardNum.textContent = `Hand Size: ${roundScheme[roundIndex]}`;
+                const hr = document.createElement('hr');
+                form.appendChild(cardNum);
+                form.appendChild(hr);
+                players.forEach((player, index) => {
+                    const label = document.createElement('label');
+                    label.for = `${type}${index + 1}`;
+                    label.textContent = `${player}\'s ${type.charAt(0).toUpperCase() + type.slice(1)}: `;
+                    linebreak = document.createElement('br');
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = '0';
+                    input.id = `${type}${index + 1}`;
+                    input.name = `${type}${index + 1}`;
+                    input.required = true;
+                    label.appendChild(input);
+                    form.appendChild(label);
+                    form.appendChild(linebreak);
+                });
+                const button = document.createElement('button');
+                button.type = 'submit';
+                button.textContent = type === 'bet' ? 'Submit Bets' : 'Play Round';
+                form.appendChild(button);
+                return form;
+            }
+            
+            function handleBetSubmission(players){
+                const container = document.getElementById('inputContainer');
+                const betForm = buildInputForm(players, 'bet');
+                container.innerHTML = '';
+                container.appendChild(betForm);
+                betForm.onsubmit = function (event) {
+                    event.preventDefault();
+                    const bet_array = players.map((_,i) => {
+                        const val = betForm[`bet${i + 1}`].value;
+                        return Number(val);
+                    });
+                    window.currentBets = bet_array;
+                    const bet_sum = bet_array.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                    if (bet_sum === roundScheme[roundIndex]){
+                        alert("Bet total cannot equal the number of cards in the game.\nSomeone must lose.")
+                        betForm.reset();
+                        return;
+                    }
+                    handleTakeSubmission(players);
+                }
+            }
+
+            function handleTakeSubmission(players){
+                const container = document.getElementById('inputContainer');
+                const takeForm = buildInputForm(players, 'take');
+                container.innerHTML = '';
+                container.appendChild(takeForm);
+                takeForm.onsubmit = function (event) {
+                    event.preventDefault();
+                    const take_array = players.map((_,i) => {
+                        const val = takeForm[`take${i + 1}`].value;
+                        return Number(val);
+                    });
+                    window.currentTakes = take_array;
+                    updateScores();
+                }
+            }
+
+            function updateScores(){
+                const bets = window.currentBets
+                const takes = window.currentTakes
+                let roundScores = [];
+                let i = 0;
+                for (i; i < players.length; i++){
+                    let scoreChange;
+                    if (bets[i] === takes[i]){
+                        scoreChange = 5 + bets[i];
+                    }
+                    else{
+                        scoreChange = -Math.abs(bets[i]-takes[i]);
+                    }
+                    window.playerScores[i] += scoreChange;
+                    roundScores.push(window.playerScores[i]);
+                }
+                const tbody = document.getElementById('scoreboard-body');
+                const newRow = document.createElement('tr');
+                const roundCell = document.createElement('td');
+                roundCell.textContent = roundScheme[roundIndex];
+                newRow.appendChild(roundCell);
+                roundScores.forEach((score, i) => {
+                    const scoreCell = document.createElement('td')
+                    scoreCell.textContent = score;
+                    newRow.appendChild(scoreCell);
+
+                    const betCell = document.createElement('td');
+                    betCell.textContent = bets[i];
+                    newRow.appendChild(betCell);
+
+                    const takeCell = document.createElement('td');
+                    takeCell.textContent = takes[i];
+                    newRow.appendChild(takeCell);
+                });
+                tbody.appendChild(newRow);
+                roundIndex++;
+                startRound();
+            }
+            
+            function startRound() {
+            handleBetSubmission(players, () => {
+                handleTakeSubmission(players, () => {
+                updateScores();
+                });
+            });
+            }
+
+            window.onload = function() {
+            window.playerScores = players.map(() => 0);
+            buildScoreBoard();
+            startRound();
+            };
+
+        </script>
+    </body>
+</html>
