@@ -9,4 +9,4 @@ Automatic Scoreboard for card game Whist. Simply read the rules, input names and
 
 ## Getting Started:
 
-	**[Live Demo](https://ovistefan.github.io/WistScoreKeeperWebsite/)
+	**[Live Webiste](https://ovistefan.github.io/WistScoreKeeperWebsite/)
